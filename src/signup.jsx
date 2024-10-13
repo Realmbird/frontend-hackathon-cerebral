@@ -10,10 +10,44 @@ function SignUp () {
         password: ''
     })
     const [error, setError] = useState('')
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
        e.preventDefault()
        console.log(form)
-       setError("submited")
+    // replace port    
+       try {
+        const response = await fetch(`http://localhost:8000/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',  // Ensure the request is sent as JSON
+            },
+            body: JSON.stringify({ form_data: formData }), // Format the body correctly
+        });
+
+        if (response.ok) {
+            const headers = response.headers;
+            const authToken = headers.get('Authorization');
+             // This is how you would retrieve the Authorization token
+            console.log(authToken)
+            // // Optionally, store the auth token in localStorage or sessionStorage
+            if (authToken) {
+                localStorage.setItem('authToken', authToken);
+            }
+            const data = await response.json();
+            console.log('Success:', data);
+            
+            navigate("/app");
+            // You can redirect the user or update the UI as needed
+            setError('');
+        } else {
+            const errorData = await response.json();
+            console.error('Failed to sign up:', response.statusText);
+            // Set the error message from the server response
+            setError(errorData.status.message);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+       
     }
     const handleChange = (e) => {
         setForm({...form, 

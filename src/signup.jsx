@@ -20,7 +20,7 @@ function SignUp () {
             headers: {
                 'Content-Type': 'application/json',  // Ensure the request is sent as JSON
             },
-            body: JSON.stringify({ form_data: formData }), // Format the body correctly
+            body: JSON.stringify({ form_data: form }), // Format the body correctly
         });
 
         if (response.ok) {
